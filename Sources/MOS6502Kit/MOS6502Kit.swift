@@ -26,7 +26,7 @@ public class MOS6502Kit {
      - Returns: The result of flag in boolean.
      */
     public func getFlag(_ flag: Flags) -> Bool {
-        return status & 1 << flag.rawValue == 1
+        return status & 1 << flag.rawValue != 0
     }
 
 //    public static func <- (lhs: MOS6502Kit, rhs: Registers) -> UInt8 {
