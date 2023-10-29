@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftlintplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Helloyunho/SwiftLintPlugin",
+      "state" : {
+        "revision" : "f63690176360b72a64610e980812239b6fe752a4",
+        "version" : "0.53.0"
+      }
+    }
+  ],
+  "version" : 2
+}

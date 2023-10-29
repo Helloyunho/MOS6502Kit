@@ -6,5 +6,5 @@ public enum Flags: UInt8 {
 
 public enum FullNameFlags: UInt8 {
     // Exact same as ``Flags`` but with full names
-    case Negative, Overflow, Unused, Break, Decimal, InterruptDisable, Zero, Carry
+    case negative, overflow, unused, `break`, decimal, interruptDisable, zero, carry
 }
