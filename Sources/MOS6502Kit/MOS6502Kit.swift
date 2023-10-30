@@ -23,6 +23,8 @@ public class MOS6502Kit {
     public var PC: UInt16 = 0
 
     /**
+     Gets whether the specific flag is enabled or not.
+
      - Parameters:
         - flag: Flag position you want to get.
      - Returns: The result of flag in boolean.
@@ -31,8 +33,24 @@ public class MOS6502Kit {
         return status & 1 << flag.rawValue != 0
     }
 
+    /**
+     Gets whether the specific flag is enabled or not.
+
+     - Parameters:
+        - flag: Flag position you want to get.
+     - Returns: The result of flag in boolean.
+     */
     public func getFlag(_ flag: FullNameFlags) -> Bool {
         return status & 1 << flag.rawValue != 0
+    }
+    
+    public subscript(register: Registers) -> UInt8 {
+        get {
+            self.registers[register]!
+        }
+        set {
+            self.registers[register] = newValue
+        }
     }
 
 //    public static func <- (lhs: MOS6502Kit, rhs: Registers) -> UInt8 {
