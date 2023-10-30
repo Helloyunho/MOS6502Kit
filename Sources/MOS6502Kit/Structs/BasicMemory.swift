@@ -4,17 +4,33 @@ public struct BasicMemory: MemoryLayout {
     /// DONT ACCESS THIS DIRECTLY PLEASE GOD
     var memory: Data
 
+    var count: Int {
+        memory.count
+    }
+
     /**
+     Uses the provided data as memory.
+
      - Parameters:
-        - memory: memory representation in Data.
+        - memory: Memory representation in Data.
      */
     public init(memory: Data) {
         self.memory = memory
     }
 
-    /// Initialize all the available memory (0xFFFF or 65535 bytes).
-    init() {
-        memory = Data(count: 0xFFFF)
+    /**
+     Initializes memory for limited count.
+
+     - Parameters:
+        - count: Memory size to initialize.
+     */
+    public init(count: UInt16) {
+        memory = Data(count: Int(count))
+    }
+
+    /// Initializes all the available memory (0xFFFF or 65535 bytes).
+    public init() {
+        self.init(count: 0xFFFF)
     }
 
     public func read(_ addr: UInt16) -> UInt8 {
