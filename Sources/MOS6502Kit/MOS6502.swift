@@ -1,14 +1,14 @@
 // infix operator <-: DefaultPrecedence
 
-public class MOS6502Kit {
+public class MOS6502 {
     /// Dictionary based set of registers.
     public var registers: [Registers: UInt8] = [
         .A: 0,
         .X: 0,
         .Y: 0,
-        .S: 0
-        // P register is status flag
-        // PC has separated register
+        .S: 0,
+        .P: 0
+        // PC has separated variable
     ]
 
     /**
@@ -17,7 +17,14 @@ public class MOS6502Kit {
      Do not use this variable directly unless you know what you're doing.
      I strongly recommend you to use ``getFlag(_:)-nzwp`` instead.
      */
-    public var status: UInt8 = 0
+    public var status: UInt8 {
+        get {
+            self.registers[.P]!
+        }
+        set {
+            self.registers[.P] = newValue
+        }
+    }
 
     /// Represents program counter (or register PC).
     public var PC: UInt16 = 0
