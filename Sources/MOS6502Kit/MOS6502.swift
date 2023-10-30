@@ -9,7 +9,7 @@ public class MOS6502 {
         .X: 0,
         .Y: 0,
         .S: 0,
-        .P: 0
+        .P: 0b0010_0000
         // PC has separated variable
     ]
 
@@ -53,14 +53,41 @@ public class MOS6502 {
     }
 
     /**
-     Gets whether the specific flag is enabled or not.
-
+     Sets(or toggles) specific flag.
      - Parameters:
-        - flag: Flag position you want to get.
-     - Returns: The result of flag in boolean.
+        - flag: Flag position you want to set.
+        - to: The value in boolean. Leave it blank(or set it to `nil`) to toggle the value.
+     - Returns: The changed status.
      */
-    public func getFlag(_ flag: FullNameFlags) -> Bool {
-        return self.status & 1 << flag.rawValue != 0
+    @discardableResult
+    public func setFlag(_ flag: Flags, to: Bool? = nil) -> UInt8 {
+        if let to = to {
+            self.status = (
+                self.status & ~(
+                    1 << flag.rawValue
+                )
+            ) | (
+                (
+                    (
+                        to ? 1 : 0
+                    ) << flag.rawValue
+                )
+            )
+        } else {
+            self.status = (
+                self.status & ~(
+                    1 << flag.rawValue
+                )
+            ) | (
+                (
+                    (
+                        !self.getFlag(flag) ? 1 : 0
+                    ) << flag.rawValue
+                )
+            )
+        }
+        
+        return self.status
     }
 
     public subscript(register: AccessableRegisters) -> UInt8 {
@@ -78,6 +105,14 @@ public class MOS6502 {
         }
         set {
             self.memory[addr] = newValue
+        }
+    }
+    
+    public subscript(flag: Flags) -> Bool {
+        get {
+            self.getFlag(flag)
+        } set {
+            self.setFlag(flag, to: newValue)
         }
     }
 
