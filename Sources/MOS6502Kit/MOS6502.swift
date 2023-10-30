@@ -1,8 +1,10 @@
 // infix operator <-: DefaultPrecedence
 
 public class MOS6502 {
+    // MARK: Variables
+
     /// Dictionary based set of registers.
-    public var registers: [Registers: UInt8] = [
+    public var registers: [AccessableRegisters: UInt8] = [
         .A: 0,
         .X: 0,
         .Y: 0,
@@ -29,6 +31,16 @@ public class MOS6502 {
     /// Represents program counter (or register PC).
     public var PC: UInt16 = 0
 
+    public var memory: MemoryLayout
+
+    // MARK: Initializer
+
+    public init(memory: MemoryLayout) {
+        self.memory = memory
+    }
+
+    // MARK: Functions
+
     /**
      Gets whether the specific flag is enabled or not.
 
@@ -37,7 +49,7 @@ public class MOS6502 {
      - Returns: The result of flag in boolean.
      */
     public func getFlag(_ flag: Flags) -> Bool {
-        return status & 1 << flag.rawValue != 0
+        return self.status & 1 << flag.rawValue != 0
     }
 
     /**
@@ -48,15 +60,24 @@ public class MOS6502 {
      - Returns: The result of flag in boolean.
      */
     public func getFlag(_ flag: FullNameFlags) -> Bool {
-        return status & 1 << flag.rawValue != 0
+        return self.status & 1 << flag.rawValue != 0
     }
-    
-    public subscript(register: Registers) -> UInt8 {
+
+    public subscript(register: AccessableRegisters) -> UInt8 {
         get {
             self.registers[register]!
         }
         set {
             self.registers[register] = newValue
+        }
+    }
+
+    public subscript(addr: UInt16) -> UInt8 {
+        get {
+            self.memory[addr]
+        }
+        set {
+            self.memory[addr] = newValue
         }
     }
 
