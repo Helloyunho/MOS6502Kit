@@ -61,32 +61,16 @@ public class MOS6502 {
      */
     @discardableResult
     public func setFlag(_ flag: Flags, to: Bool? = nil) -> UInt8 {
-        if let to = to {
-            self.status = (
-                self.status & ~(
-                    1 << flag.rawValue
-                )
-            ) | (
-                (
-                    (
-                        to ? 1 : 0
-                    ) << flag.rawValue
-                )
+        self.status = (
+            self.status & ~(
+                1 << flag.rawValue
             )
-        } else {
-            self.status = (
-                self.status & ~(
-                    1 << flag.rawValue
-                )
-            ) | (
-                (
-                    (
-                        !self.getFlag(flag) ? 1 : 0
-                    ) << flag.rawValue
-                )
-            )
-        }
-        
+        ) | (
+            (
+                (to ?? !self.getFlag(flag)) ? 1 : 0
+            ) << flag.rawValue
+        )
+
         return self.status
     }
 
@@ -107,7 +91,7 @@ public class MOS6502 {
             self.memory[addr] = newValue
         }
     }
-    
+
     public subscript(flag: Flags) -> Bool {
         get {
             self.getFlag(flag)

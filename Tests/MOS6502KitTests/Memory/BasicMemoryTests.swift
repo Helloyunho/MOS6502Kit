@@ -34,4 +34,24 @@ final class BasicMemoryTests: XCTestCase {
         mem.write(0, UInt8(0xEA))
         XCTAssertEqual(mem[0], 0xEA, "Memory value test (after mod)")
     }
+    
+    func testBasicMemory16BitIO() {
+        var data = Data(count: 0x4)
+        data[0] = 0xEA
+        data[1] = 0xAA
+        data[2] = 0x10
+        data[3] = 0x01
+        var mem = BasicMemory(memory: data)
+
+        XCTAssertEqual(mem.read2Bytes(0x0), 0xAAEA, "Memory 16 bit read test")
+        XCTAssertEqual(mem.read2Bytes(0x2), 0x0110, "Memory 16 bit read test")
+        
+        mem.write(0x1, UInt16(0xAEDA)) // dont try this tho cuz the address is not an even number
+        XCTAssertEqual(mem.read(0x1), 0xDA, "Memory 16 bit value conversion test")
+        XCTAssertEqual(mem.read(0x2), 0xAE, "Memory 16 bit value conversion test")
+        
+        XCTAssertEqual(mem[twoBytes: 0x0], 0xDAEA, "Memory 16 bit subscript read test")
+        mem[twoBytes: 0x0] = 0xAEEA
+        XCTAssertEqual(mem[twoBytes: 0x0], 0xAEEA, "Memory 16 bit subscript rw test")
+    }
 }
