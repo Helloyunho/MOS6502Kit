@@ -1,23 +1,26 @@
-import XCTest
 @testable import MOS6502Kit
+import XCTest
 
 final class BasicMemoryTests: XCTestCase {
     func testBasicMemoryInitialization() {
-        // maximum size
+        // MARK: maximum size
+
         let allMem = BasicMemory()
         XCTAssertEqual(allMem.count, 0xFFFF, "Maximum sized memory count test")
         
-        // limited size
+        // MARK: limited size
+
         let limitMem = BasicMemory(count: 0xFFF)
         XCTAssertEqual(limitMem.count, 0xFFF, "Limited size memory count test")
         
-        // custom data
+        // MARK: custom data
+
         var data = Data(count: 0x4)
         data[0] = 0xCA
         data[1] = 0xFE
         data[2] = 0xBA
         data[3] = 0xBE // 0xCAFEBABE lol
-        var customMem = BasicMemory(memory: data)
+        let customMem = BasicMemory(memory: data)
 
         XCTAssertEqual(data.count, customMem.count, "Memory with custom data count test")
         XCTAssertEqual(data[0], customMem[0], "Memory with custom data equality test")
