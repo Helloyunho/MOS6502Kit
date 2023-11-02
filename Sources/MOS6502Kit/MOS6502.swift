@@ -1,6 +1,6 @@
 // infix operator <-: DefaultPrecedence
 
-public class MOS6502 {
+public struct MOS6502 {
     // MARK: Variables
 
     /// Dictionary based set of registers.
@@ -8,7 +8,7 @@ public class MOS6502 {
         .A: 0,
         .X: 0,
         .Y: 0,
-        .S: 0,
+        .S: 0xFD,
         .P: 0b0010_0000
         // PC has separated variable
     ]
@@ -21,10 +21,10 @@ public class MOS6502 {
      */
     public var status: UInt8 {
         get {
-            self.registers[.P]!
+            registers[.P]!
         }
         set {
-            self.registers[.P] = newValue
+            registers[.P] = newValue
         }
     }
 
@@ -49,7 +49,7 @@ public class MOS6502 {
      - Returns: The result of flag in boolean.
      */
     public func getFlag(_ flag: Flags) -> Bool {
-        return self.status & 1 << flag.rawValue != 0
+        return status & 1 << flag.rawValue != 0
     }
 
     /**
@@ -60,43 +60,98 @@ public class MOS6502 {
      - Returns: The changed status.
      */
     @discardableResult
-    public func setFlag(_ flag: Flags, to: Bool? = nil) -> UInt8 {
-        self.status = (
-            self.status & ~(
+    public mutating func setFlag(_ flag: Flags, to: Bool? = nil) -> UInt8 {
+        status = (
+            status & ~(
                 1 << flag.rawValue
             )
         ) | (
             (
-                (to ?? !self.getFlag(flag)) ? 1 : 0
+                (to ?? !getFlag(flag)) ? 1 : 0
             ) << flag.rawValue
         )
 
-        return self.status
+        return status
+    }
+
+    public func getAddress(_ mode: AddressingMode) -> UInt16 {
+        switch mode {
+        case .immediate:
+            return PC
+        case .absolute:
+            return memory[twoBytes: PC]
+        case .zeroPage:
+            return UInt16(memory[PC])
+        case .relative:
+            let offset = memory[PC]
+            // We first convert offset to a **signed** integer, 8-bit.
+            // Then we convert it to 32-bit integer and add it to PC (casted as 32-bit integer).
+            // This is to support negative offsets, otherwise signed integers
+            // would not be needed.
+            let signedOffset = Int8(bitPattern: offset)
+            return UInt16(Int(PC) &+ Int(signedOffset))
+        case .absoluteIndirect:
+            return memory[twoBytes: PC]
+        case .absoluteIndexedX:
+            return memory[twoBytes: PC] &+ UInt16(registers[.X]!)
+        case .absoluteIndexedY:
+            return memory[twoBytes: PC] &+ UInt16(registers[.Y]!)
+        case .zeroPageIndexedX:
+            return UInt16(memory[PC] &+ registers[.X]!)
+        case .zeroPageIndexedY:
+            return UInt16(memory[PC] &+ registers[.Y]!)
+        case .zeroPageIndexedIndirectX:
+            let base = memory[PC &- 1]
+            let pointer = base &+ registers[.X]!
+            return UInt16(memory[UInt16(pointer)]) | UInt16(memory[UInt16(pointer &+ 1)] << 8)
+        case .zeroPageIndexedIndirectY:
+            let base = memory[PC &- 1]
+            let pointer = UInt16(memory[UInt16(base)]) | UInt16(memory[UInt16(base &+ 1)] << 8)
+            return pointer &+ UInt16(registers[.Y]!)
+        default:
+            // TODO: Make a proper error
+            fatalError("Register addressing mode detected.")
+        }
     }
 
     public subscript(register: AccessableRegisters) -> UInt8 {
         get {
-            self.registers[register]!
+            registers[register]!
         }
         set {
-            self.registers[register] = newValue
+            registers[register] = newValue
         }
     }
 
     public subscript(addr: UInt16) -> UInt8 {
         get {
-            self.memory[addr]
+            memory[addr]
         }
         set {
-            self.memory[addr] = newValue
+            memory[addr] = newValue
+        }
+    }
+
+    public subscript(twoBytes addr: UInt16) -> UInt16 {
+        get {
+            memory[twoBytes: addr]
+        }
+        set {
+            memory[twoBytes: addr] = newValue
         }
     }
 
     public subscript(flag: Flags) -> Bool {
         get {
-            self.getFlag(flag)
+            getFlag(flag)
         } set {
-            self.setFlag(flag, to: newValue)
+            setFlag(flag, to: newValue)
+        }
+    }
+
+    public subscript(addressingMode: AddressingMode) -> UInt16 {
+        get {
+            getAddress(addressingMode)
         }
     }
 
