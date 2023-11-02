@@ -101,11 +101,11 @@ public struct MOS6502 {
         case .zeroPageIndexedY:
             return UInt16(memory[PC] &+ registers[.Y]!)
         case .zeroPageIndexedIndirectX:
-            let base = memory[PC &- 1]
+            let base = memory[PC]
             let pointer = base &+ registers[.X]!
             return UInt16(memory[UInt16(pointer)]) | UInt16(memory[UInt16(pointer &+ 1)] << 8)
         case .zeroPageIndexedIndirectY:
-            let base = memory[PC &- 1]
+            let base = memory[PC]
             let pointer = UInt16(memory[UInt16(base)]) | UInt16(memory[UInt16(base &+ 1)] << 8)
             return pointer &+ UInt16(registers[.Y]!)
         default:
