@@ -1,7 +1,9 @@
-// infix operator <-: DefaultPrecedence
+// infix operator <-: DefaultPrecedence]
 
 public struct MOS6502 {
     // MARK: Variables
+
+    public static var opHandlers = [UInt8: () -> ()]()
 
     /// Dictionary based set of registers.
     public var registers: [AccessableRegisters: UInt8] = [
@@ -114,47 +116,124 @@ public struct MOS6502 {
         }
     }
 
-    public subscript(register: AccessableRegisters) -> UInt8 {
-        get {
-            registers[register]!
+    public mutating func getAddressAndMovePC(_ mode: AddressingMode) -> UInt16 {
+        let data = getAddress(mode)
+        switch mode {
+        case .immediate, .zeroPage, .relative, .zeroPageIndexedX, .zeroPageIndexedY, .zeroPageIndexedIndirectX, .zeroPageIndexedIndirectY:
+            PC += 1
+        case .absolute, .absoluteIndirect, .absoluteIndexedX, .absoluteIndexedY:
+            PC += 2
+        default:
+            // TODO: Make a proper error
+            fatalError("Register addressing mode detected.")
         }
-        set {
-            registers[register] = newValue
-        }
+
+        return data
     }
 
-    public subscript(addr: UInt16) -> UInt8 {
-        get {
-            memory[addr]
-        }
-        set {
-            memory[addr] = newValue
+    public mutating func exec() {
+        let op = memory[PC]
+        PC += 1
+        
+        switch op {
+        case 0xAD:
+            LDA(.absolute)
+        case 0xBD:
+            LDA(.absoluteIndexedX)
+        case 0xB9:
+            LDA(.absoluteIndexedY)
+        case 0xA9:
+            LDA(.immediate)
+        case 0xA5:
+            LDA(.zeroPage)
+        case 0xA1:
+            LDA(.zeroPageIndexedIndirectX)
+        case 0xB5:
+            LDA(.zeroPageIndexedX)
+        case 0xB1:
+            LDA(.zeroPageIndexedIndirectY)
+        case 0xAE:
+            LDX(.absolute)
+        case 0xBE:
+            LDX(.absoluteIndexedY)
+        case 0xA2:
+            LDX(.immediate)
+        case 0xA6:
+            LDX(.zeroPage)
+        case 0xB6:
+            LDX(.zeroPageIndexedY)
+        case 0xAC:
+            LDY(.absolute)
+        case 0xBC:
+            LDY(.absoluteIndexedX)
+        case 0xA0:
+            LDY(.immediate)
+        case 0xA4:
+            LDY(.zeroPage)
+        case 0xB4:
+            LDY(.zeroPageIndexedX)
+        case 0x8D:
+            STA(.absolute)
+        case 0x9D:
+            STA(.absoluteIndexedX)
+        case 0x99:
+            STA(.absoluteIndexedY)
+        case 0x85:
+            STA(.zeroPage)
+        case 0x81:
+            STA(.zeroPageIndexedIndirectX)
+        case 0x95:
+            STA(.zeroPageIndexedX)
+        case 0x91:
+            STA(.zeroPageIndexedIndirectY)
+        case 0x8E:
+            STX(.absolute)
+        case 0x86:
+            STX(.zeroPage)
+        case 0x96:
+            STX(.zeroPageIndexedY)
+        case 0x8C:
+            STY(.absolute)
+        case 0x84:
+            STY(.zeroPage)
+        case 0x94:
+            STY(.zeroPageIndexedX)
+        case 0x6D:
+            ADC(.absolute)
+        case 0x7D:
+            ADC(.absoluteIndexedX)
+        case 0x79:
+            ADC(.absoluteIndexedY)
+        case 0x69:
+            ADC(.immediate)
+        case 0x65:
+            ADC(.zeroPage)
+        case 0x61:
+            ADC(.zeroPageIndexedIndirectX)
+        case 0x75:
+            ADC(.zeroPageIndexedX)
+        case 0x71:
+            ADC(.zeroPageIndexedIndirectY)
+        case 0xED:
+            SBC(.absolute)
+        case 0xFD:
+            SBC(.absoluteIndexedX)
+        case 0xF9:
+            SBC(.absoluteIndexedY)
+        case 0xE9:
+            SBC(.immediate)
+        case 0xE5:
+            SBC(.zeroPage)
+        case 0xE1:
+            SBC(.zeroPageIndexedIndirectX)
+        case 0xF5:
+            SBC(.zeroPageIndexedX)
+        case 0xF1:
+            SBC(.zeroPageIndexedIndirectY)
+        default:
+            fatalError("Unknown OP code \(op) detected.")
         }
     }
-
-    public subscript(twoBytes addr: UInt16) -> UInt16 {
-        get {
-            memory[twoBytes: addr]
-        }
-        set {
-            memory[twoBytes: addr] = newValue
-        }
-    }
-
-    public subscript(flag: Flags) -> Bool {
-        get {
-            getFlag(flag)
-        } set {
-            setFlag(flag, to: newValue)
-        }
-    }
-
-    public subscript(addressingMode: AddressingMode) -> UInt16 {
-        get {
-            getAddress(addressingMode)
-        }
-    }
-
 //    public static func <- (lhs: MOS6502Kit, rhs: Registers) -> UInt8 {
 //        return lhs.registers[rhs]!
 //    }

@@ -58,7 +58,7 @@ public struct BasicMemory: MemoryLayout {
      > [little-endian](https://en.wikipedia.org/wiki/Endianness).
      > For example, if the value is `0x00FF` and the address is `0x0`,
      > ``write(_:_:)-3h84e`` writes `0xFF` to `0x0` and `0x00` to `0x1`.
-     
+
      > Important: It's also worth noting that the address like `0xFFFF` can cause overflow since
      > `0xFFFF + 1` is above 16-bit. When this happens, write the value on `0x0` instead.
      > Surprisingly this is excepted behaviour and some 6502 code uses this.
