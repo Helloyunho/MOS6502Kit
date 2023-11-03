@@ -32,13 +32,11 @@ public extension MOS6502 {
     
     mutating func STX(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
-        let data = self[addr]
         self[addr] = self[.X]
     }
     
     mutating func STY(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
-        let data = self[addr]
         self[addr] = self[.Y]
     }
 }
