@@ -3,7 +3,7 @@ import XCTest
 
 final class CPUL_STests: XCTestCase {
     func testLDA() {
-        let mem = BasicMemory(memory: Data([ 0xa9, 0xEA, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0xA9, 0xEA, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu.step()
@@ -11,7 +11,7 @@ final class CPUL_STests: XCTestCase {
     }
 
     func testLDX() {
-        let mem = BasicMemory(memory: Data([ 0xa2, 0xEA, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0xA2, 0xEA, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu.step()
@@ -19,7 +19,7 @@ final class CPUL_STests: XCTestCase {
     }
 
     func testLDY() {
-        let mem = BasicMemory(memory: Data([ 0xa0, 0xEA, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0xA0, 0xEA, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu.step()
@@ -27,28 +27,28 @@ final class CPUL_STests: XCTestCase {
     }
 
     func testSTA() {
-        let mem = BasicMemory(memory: Data([ 0x85, 0x0, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0x85, 0x0, 0x00]))
         var cpu = MOS6502(memory: mem)
 
-        cpu[.A] = 0xEA
+        cpu[.A] = 0xea
         cpu.step()
         XCTAssertEqual(cpu.memory[0x0], 0xEA, "STA zero page test")
     }
-    
+
     func testSTX() {
-        let mem = BasicMemory(memory: Data([ 0x86, 0x0, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0x86, 0x0, 0x00]))
         var cpu = MOS6502(memory: mem)
 
-        cpu[.X] = 0xEA
+        cpu[.X] = 0xea
         cpu.step()
         XCTAssertEqual(cpu.memory[0x0], 0xEA, "STX zero page test")
     }
 
     func testSTY() {
-        let mem = BasicMemory(memory: Data([ 0x84, 0x0, 0x00 ]))
+        let mem = BasicMemory(memory: Data([0x84, 0x0, 0x00]))
         var cpu = MOS6502(memory: mem)
 
-        cpu[.Y] = 0xEA
+        cpu[.Y] = 0xea
         cpu.step()
         XCTAssertEqual(cpu.memory[0x0], 0xEA, "STY zero page test")
     }

@@ -134,7 +134,7 @@ public struct MOS6502 {
     public mutating func step() {
         let op = memory[PC]
         PC += 1
-        
+
         switch op {
         case 0xAD:
             LDA(.absolute)
@@ -238,22 +238,22 @@ public struct MOS6502 {
             INC(.zeroPage)
         case 0xF6:
             INC(.zeroPageIndexedX)
-        case 0xCA:
-            DEX()
-        case 0x88:
-            DEY()
-        case 0xC6:
-            DEC(.zeroPage)
-        case 0xD6:
-            DEC(.zeroPageIndexedX)
-        case 0xCE:
-            DEC(.absolute)
-        case 0xDE:
-            DEC(.absoluteIndexedX)
         case 0xE8:
             INX()
         case 0xC8:
             INY()
+        case 0xCE:
+            DEC(.absolute)
+        case 0xDE:
+            DEC(.absoluteIndexedX)
+        case 0xC6:
+            DEC(.zeroPage)
+        case 0xD6:
+            DEC(.zeroPageIndexedX)
+        case 0xCA:
+            DEX()
+        case 0x88:
+            DEY()
         default:
             fatalError("Unknown OP code \(op) detected.")
         }
