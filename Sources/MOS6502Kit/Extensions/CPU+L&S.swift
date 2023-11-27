@@ -8,7 +8,7 @@ public extension MOS6502 {
         self[.N] = data & 0b1000_0000 != 0
         self[.Z] = data == 0
     }
-    
+
     mutating func LDX(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let data = self[addr]
@@ -16,7 +16,7 @@ public extension MOS6502 {
         self[.N] = data & 0b1000_0000 != 0
         self[.Z] = data == 0
     }
-    
+
     mutating func LDY(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let data = self[addr]
@@ -24,17 +24,17 @@ public extension MOS6502 {
         self[.N] = data & 0b1000_0000 != 0
         self[.Z] = data == 0
     }
-    
+
     mutating func STA(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         self[addr] = self[.A]
     }
-    
+
     mutating func STX(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         self[addr] = self[.X]
     }
-    
+
     mutating func STY(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         self[addr] = self[.Y]

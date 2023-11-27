@@ -3,7 +3,7 @@ import XCTest
 
 final class CPUIncDecTests: XCTestCase {
     func testINC() {
-        let mem = BasicMemory(memory: Data([0xEE, 0x03, 0x00, 0x03]))
+        let mem = BasicMemory(memory: Data([0xee, 0x03, 0x00, 0x03]))
         var cpu = MOS6502(memory: mem)
 
         cpu.step()
@@ -11,7 +11,7 @@ final class CPUIncDecTests: XCTestCase {
     }
 
     func testINX() {
-        let mem = BasicMemory(memory: Data([0xE8, 0x00]))
+        let mem = BasicMemory(memory: Data([0xe8, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu[.X] = 0x01
@@ -20,7 +20,7 @@ final class CPUIncDecTests: XCTestCase {
     }
 
     func testINY() {
-        let mem = BasicMemory(memory: Data([0xC8, 0x00]))
+        let mem = BasicMemory(memory: Data([0xc8, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu[.Y] = 0x01
@@ -29,7 +29,7 @@ final class CPUIncDecTests: XCTestCase {
     }
 
     func testDEC() {
-        let mem = BasicMemory(memory: Data([0xCE, 0x03, 0x00, 0x01]))
+        let mem = BasicMemory(memory: Data([0xce, 0x03, 0x00, 0x01]))
         var cpu = MOS6502(memory: mem)
 
         cpu.step()
@@ -37,7 +37,7 @@ final class CPUIncDecTests: XCTestCase {
     }
 
     func testDEX() {
-        let mem = BasicMemory(memory: Data([0xCA, 0x00]))
+        let mem = BasicMemory(memory: Data([0xca, 0x00]))
         var cpu = MOS6502(memory: mem)
 
         cpu[.X] = 0x01

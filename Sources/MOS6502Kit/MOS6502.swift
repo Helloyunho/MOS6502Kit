@@ -1,9 +1,10 @@
 // infix operator <-: DefaultPrecedence]
 
+// swiftlint:disable type_body_length
 public struct MOS6502 {
     // MARK: Variables
 
-    public static var opHandlers = [UInt8: () -> ()]()
+    public static var opHandlers = [UInt8: () -> Void]()
 
     /// Dictionary based set of registers.
     public var registers: [AccessableRegisters: UInt8] = [
@@ -119,7 +120,10 @@ public struct MOS6502 {
     public mutating func getAddressAndMovePC(_ mode: AddressingMode) -> UInt16 {
         let data = getAddress(mode)
         switch mode {
-        case .immediate, .zeroPage, .relative, .zeroPageIndexedX, .zeroPageIndexedY, .zeroPageIndexedIndirectX, .zeroPageIndexedIndirectY:
+        case .immediate, .zeroPage,
+             .relative, .zeroPageIndexedX,
+             .zeroPageIndexedY, .zeroPageIndexedIndirectX,
+             .zeroPageIndexedIndirectY:
             PC += 1
         case .absolute, .absoluteIndirect, .absoluteIndexedX, .absoluteIndexedY:
             PC += 2
@@ -131,6 +135,28 @@ public struct MOS6502 {
         return data
     }
 
+    public mutating func pushStack(_ value: UInt8) {
+        memory[0x100 + UInt16(self[.S])] = value
+        self[.S] -= 1
+    }
+
+    // public mutating func pushStack(_ value: UInt16) {
+    //     pushStack(UInt8(value >> 8))
+    //     pushStack(UInt8(value & 0xFF))
+    // }
+
+    public mutating func popStack() -> UInt8 {
+        self[.S] += 1
+        return memory[0x100 + UInt16(self[.S])]
+    }
+
+    // public mutating func popStack() -> UInt16 {
+    //     let low = UInt16(popStack())
+    //     let high = UInt16(popStack())
+    //     return (high << 8) | low
+    // }
+
+    // swiftlint:disable function_body_length
     public mutating func step() {
         let op = memory[PC]
         PC += 1
@@ -254,11 +280,202 @@ public struct MOS6502 {
             DEX()
         case 0x88:
             DEY()
+        case 0x0A:
+            ASL()
+        case 0x0E:
+            ASL(.absolute)
+        case 0x1E:
+            ASL(.absoluteIndexedX)
+        case 0x06:
+            ASL(.zeroPage)
+        case 0x16:
+            ASL(.zeroPageIndexedX)
+        case 0x4A:
+            LSR()
+        case 0x4E:
+            LSR(.absolute)
+        case 0x5E:
+            LSR(.absoluteIndexedX)
+        case 0x46:
+            LSR(.zeroPage)
+        case 0x56:
+            LSR(.zeroPageIndexedX)
+        case 0x2A:
+            ROL()
+        case 0x2E:
+            ROL(.absolute)
+        case 0x3E:
+            ROL(.absoluteIndexedX)
+        case 0x26:
+            ROL(.zeroPage)
+        case 0x36:
+            ROL(.zeroPageIndexedX)
+        case 0x6A:
+            ROR()
+        case 0x6E:
+            ROR(.absolute)
+        case 0x7E:
+            ROR(.absoluteIndexedX)
+        case 0x66:
+            ROR(.zeroPage)
+        case 0x76:
+            ROR(.zeroPageIndexedX)
+        case 0x2D:
+            AND(.absolute)
+        case 0x3D:
+            AND(.absoluteIndexedX)
+        case 0x39:
+            AND(.absoluteIndexedY)
+        case 0x29:
+            AND(.immediate)
+        case 0x25:
+            AND(.zeroPage)
+        case 0x21:
+            AND(.zeroPageIndexedIndirectX)
+        case 0x35:
+            AND(.zeroPageIndexedX)
+        case 0x31:
+            AND(.zeroPageIndexedIndirectY)
+        case 0x0D:
+            ORA(.absolute)
+        case 0x1D:
+            ORA(.absoluteIndexedX)
+        case 0x19:
+            ORA(.absoluteIndexedY)
+        case 0x09:
+            ORA(.immediate)
+        case 0x05:
+            ORA(.zeroPage)
+        case 0x01:
+            ORA(.zeroPageIndexedIndirectX)
+        case 0x15:
+            ORA(.zeroPageIndexedX)
+        case 0x11:
+            ORA(.zeroPageIndexedIndirectY)
+        case 0x4D:
+            EOR(.absolute)
+        case 0x5D:
+            EOR(.absoluteIndexedX)
+        case 0x59:
+            EOR(.absoluteIndexedY)
+        case 0x49:
+            EOR(.immediate)
+        case 0x45:
+            EOR(.zeroPage)
+        case 0x41:
+            EOR(.zeroPageIndexedIndirectX)
+        case 0x55:
+            EOR(.zeroPageIndexedX)
+        case 0x51:
+            EOR(.zeroPageIndexedIndirectY)
+        case 0xCD:
+            CMP(.absolute)
+        case 0xDD:
+            CMP(.absoluteIndexedX)
+        case 0xD9:
+            CMP(.absoluteIndexedY)
+        case 0xC9:
+            CMP(.immediate)
+        case 0xC5:
+            CMP(.zeroPage)
+        case 0xC1:
+            CMP(.zeroPageIndexedIndirectX)
+        case 0xD5:
+            CMP(.zeroPageIndexedX)
+        case 0xD1:
+            CMP(.zeroPageIndexedIndirectY)
+        case 0xEC:
+            CPX(.absolute)
+        case 0xE0:
+            CPX(.immediate)
+        case 0xE4:
+            CPX(.zeroPage)
+        case 0xCC:
+            CPY(.absolute)
+        case 0xC0:
+            CPY(.immediate)
+        case 0xC4:
+            CPY(.zeroPage)
+        case 0x24:
+            BIT(.zeroPage)
+        case 0x2C:
+            BIT(.absolute)
+        case 0x89:
+            BIT(.immediate)
+        case 0x90:
+            BCC(.relative)
+        case 0xB0:
+            BCS(.relative)
+        case 0xD0:
+            BNE(.relative)
+        case 0xF0:
+            BEQ(.relative)
+        case 0x10:
+            BPL(.relative)
+        case 0x30:
+            BMI(.relative)
+        case 0x50:
+            BVC(.relative)
+        case 0x70:
+            BVS(.relative)
+        case 0x4C:
+            JMP(.absolute)
+        case 0x6C:
+            JMP(.absoluteIndirect)
+        case 0x20:
+            JSR(.absolute)
+        case 0x60:
+            RTS(.implied)
+        case 0x40:
+            RTI(.implied)
+        case 0x18:
+            CLC()
+        case 0x38:
+            SEC()
+        case 0x58:
+            CLI()
+        case 0x78:
+            SEI()
+        case 0xB8:
+            CLV()
+        case 0xD8:
+            CLD()
+        case 0xF8:
+            SED()
+        case 0x48:
+            PHA()
+        case 0x68:
+            PLA()
+        case 0x08:
+            PHP()
+        case 0x28:
+            PLP()
+        case 0xAA:
+            TAX()
+        case 0x8A:
+            TXA()
+        case 0xA8:
+            TAY()
+        case 0x98:
+            TYA()
+        case 0xBA:
+            TSX()
+        case 0x9A:
+            TXS()
+        case 0xEA:
+            // NOP
+            break
+        case 0x00:
+            self[.B] = true
+            self[.I] = true
         default:
             fatalError("Unknown OP code \(op) detected.")
         }
     }
+    // swiftlint:enable function_body_length
 //    public static func <- (lhs: MOS6502Kit, rhs: Registers) -> UInt8 {
 //        return lhs.registers[rhs]!
 //    }
 }
+
+// swiftlint:enable type_body_length

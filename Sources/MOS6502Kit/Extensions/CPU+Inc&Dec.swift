@@ -10,7 +10,7 @@ public extension MOS6502 {
 
         memory[addr] = value
     }
-    
+
     mutating func INX() {
         let value = self[.X] &+ 1
 
@@ -19,7 +19,7 @@ public extension MOS6502 {
 
         self[.X] = value
     }
-    
+
     mutating func INY() {
         let value = self[.Y] &+ 1
 
@@ -28,7 +28,7 @@ public extension MOS6502 {
 
         self[.Y] = value
     }
-    
+
     mutating func DEC(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let value = memory[addr] &- 1
@@ -38,7 +38,7 @@ public extension MOS6502 {
 
         memory[addr] = value
     }
-    
+
     mutating func DEX() {
         let value = self[.X] &- 1
 
@@ -47,7 +47,7 @@ public extension MOS6502 {
 
         self[.X] = value
     }
-    
+
     mutating func DEY() {
         let value = self[.Y] &- 1
 
