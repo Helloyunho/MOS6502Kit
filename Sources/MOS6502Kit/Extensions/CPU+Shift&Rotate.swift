@@ -1,6 +1,7 @@
 import Foundation
 
 public extension MOS6502 {
+    /// Shifts the bits of the value at the specified address left by one bit.
     mutating func ASL(_ mode: AddressingMode? = nil) {
         let addr: UInt16?
         let value: UInt8
@@ -25,6 +26,7 @@ public extension MOS6502 {
         }
     }
 
+    /// Shifts the bits of the value at the specified address right by one bit.
     mutating func LSR(_ mode: AddressingMode? = nil) {
         let addr: UInt16?
         let value: UInt8
@@ -49,6 +51,7 @@ public extension MOS6502 {
         }
     }
 
+    /// Rotates the bits of the value at the specified address left by one bit.
     mutating func ROL(_ mode: AddressingMode? = nil) {
         let addr: UInt16?
         let value: UInt8
@@ -73,6 +76,7 @@ public extension MOS6502 {
         }
     }
 
+    /// Rotates the bits of the value at the specified address right by one bit.
     mutating func ROR(_ mode: AddressingMode? = nil) {
         let addr: UInt16?
         let value: UInt8

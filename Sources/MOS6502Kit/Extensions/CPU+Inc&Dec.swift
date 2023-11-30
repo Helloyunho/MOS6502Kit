@@ -1,6 +1,7 @@
 import Foundation
 
 public extension MOS6502 {
+    /// Increments the value at the specified address by one.
     mutating func INC(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let value = memory[addr] &+ 1
@@ -11,6 +12,7 @@ public extension MOS6502 {
         memory[addr] = value
     }
 
+    /// Increments the X register by one.
     mutating func INX() {
         let value = self[.X] &+ 1
 
@@ -20,6 +22,7 @@ public extension MOS6502 {
         self[.X] = value
     }
 
+    /// Increments the Y register by one.
     mutating func INY() {
         let value = self[.Y] &+ 1
 
@@ -29,6 +32,7 @@ public extension MOS6502 {
         self[.Y] = value
     }
 
+    /// Decrements the value at the specified address by one.
     mutating func DEC(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let value = memory[addr] &- 1
@@ -39,6 +43,7 @@ public extension MOS6502 {
         memory[addr] = value
     }
 
+    /// Decrements the X register by one.
     mutating func DEX() {
         let value = self[.X] &- 1
 
@@ -48,6 +53,7 @@ public extension MOS6502 {
         self[.X] = value
     }
 
+    /// Decrements the Y register by one.
     mutating func DEY() {
         let value = self[.Y] &- 1
 

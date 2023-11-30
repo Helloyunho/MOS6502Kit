@@ -1,6 +1,7 @@
 import Foundation
 
 public extension MOS6502 {
+    /// Adds the value at the specified address to the accumulator.
     mutating func ADC(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let value = memory[addr]
@@ -15,6 +16,7 @@ public extension MOS6502 {
         self[.A] = uint8sum
     }
 
+    /// Subtracts the value at the specified address from the accumulator.
     mutating func SBC(_ mode: AddressingMode) {
         let addr = getAddressAndMovePC(mode)
         let value = memory[addr]
