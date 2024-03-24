@@ -15,11 +15,14 @@ public extension MOS6502 {
 
     /// Pushes the value in the status register onto the stack.
     mutating func PHP() {
-        pushStack(self[.P])
+        var status = self.status
+        status |= 0b0001_0000
+        pushStack(status)
     }
 
     /// Pulls the value from the stack into the status register.
     mutating func PLP() {
-        self[.P] = popStack()
+        status = popStack()
+        setFlag(.B, to: false)
     }
 }

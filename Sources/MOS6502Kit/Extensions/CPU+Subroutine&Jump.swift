@@ -24,7 +24,8 @@ public extension MOS6502 {
 
     /// Returns from an interrupt.
     mutating func RTI(_ mode: AddressingMode) {
-        self[.P] = popStack()
+        status = popStack()
+        setFlag(.B, to: false)
         let low = popStack()
         let high = popStack()
         self.PC = UInt16(high) << 8 | UInt16(low)

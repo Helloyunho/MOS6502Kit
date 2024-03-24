@@ -77,6 +77,13 @@ public struct MOS6502 {
         return status
     }
 
+    /**
+     Gets the address with specified addressing mode.
+     
+     - Parameters:
+        - mode: Desired way to get the address.
+     - Returns: The address with specified addressing mode.
+     */
     public func getAddress(_ mode: AddressingMode) -> UInt16 {
         switch mode {
         case .immediate:
@@ -117,6 +124,13 @@ public struct MOS6502 {
         }
     }
 
+    /**
+     Gets the address with specified addressing mode and moves PC register accordingly.
+     
+     - Parameters:
+        - mode: Desired way to get the address.
+     - Returns: The address with specified addressing mode.
+     */
     public mutating func getAddressAndMovePC(_ mode: AddressingMode) -> UInt16 {
         let data = getAddress(mode)
         switch mode {
@@ -135,6 +149,12 @@ public struct MOS6502 {
         return data
     }
 
+    /**
+     Pushs the value into the stack.
+     
+     - Parameters:
+        - value: A single byte value.
+     */
     public mutating func pushStack(_ value: UInt8) {
         memory[0x100 + UInt16(self[.S])] = value
         self[.S] -= 1
@@ -145,6 +165,11 @@ public struct MOS6502 {
     //     pushStack(UInt8(value & 0xFF))
     // }
 
+    /**
+     Pops the value from the stack.
+     
+     - Returns: The last value that was in the stack.
+     */
     public mutating func popStack() -> UInt8 {
         self[.S] += 1
         return memory[0x100 + UInt16(self[.S])]
@@ -157,7 +182,12 @@ public struct MOS6502 {
     // }
 
     // swiftlint:disable function_body_length
-    public mutating func step() {
+    /**
+     Reads the current op code and interprets accordingly.
+     
+     > Note: This function automatically increases the PC register.
+     */
+    public mutating func step() async {
         let op = memory[PC]
         PC += 1
 
