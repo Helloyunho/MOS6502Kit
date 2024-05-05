@@ -2,67 +2,67 @@
 import XCTest
 
 final class CPUBranchTests: XCTestCase {
-    func testBCC() {
+    func testBCC() async {
         let mem = BasicMemory(memory: Data([0x90, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.C] = false
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BCC test")
     }
 
-    func testBCS() {
+    func testBCS() async {
         let mem = BasicMemory(memory: Data([0xb0, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.C] = true
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BCS test")
     }
 
-    func testBNE() {
+    func testBNE() async {
         let mem = BasicMemory(memory: Data([0xd0, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.Z] = false
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BNE test")
     }
 
-    func testBEQ() {
+    func testBEQ() async {
         let mem = BasicMemory(memory: Data([0xf0, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.Z] = true
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BEQ test")
     }
 
-    func testBPL() {
+    func testBPL() async {
         let mem = BasicMemory(memory: Data([0x10, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.N] = false
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BPL test")
     }
 
-    func testBMI() {
+    func testBMI() async {
         let mem = BasicMemory(memory: Data([0x30, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.N] = true
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BMI test")
     }
 
-    func testBVC() {
+    func testBVC() async {
         let mem = BasicMemory(memory: Data([0x50, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.V] = false
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BVC test")
     }
 
-    func testBVS() {
+    func testBVS() async {
         let mem = BasicMemory(memory: Data([0x70, 0x02, 0x00]))
         var cpu = MOS6502(memory: mem)
         cpu[.V] = true
-        cpu.step()
+        await cpu.step()
         XCTAssertEqual(cpu.PC, 0x03, "BVS test")
     }
 }

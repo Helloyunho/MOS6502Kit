@@ -12,7 +12,7 @@ final class CPUTests: XCTestCase {
         XCTAssertEqual(cpu.registers[.A], 0, "Initial CPU register test")
         XCTAssertEqual(cpu[.X], 0, "Initial CPU register test")
         XCTAssertEqual(cpu.registers[.Y], 0, "Initial CPU register test")
-        XCTAssertEqual(cpu[.S], 0, "Initial CPU register test")
+        XCTAssertEqual(cpu[.S], 0xFD, "Initial CPU register test")
         XCTAssertEqual(cpu.registers[.P], cpu.status, "Initial CPU register test")
     }
     
